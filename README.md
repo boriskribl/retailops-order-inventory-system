@@ -1,7 +1,7 @@
 # RetailOps — Enterprise Order & Inventory Management System
 
 > **Business Analysis • Systems Analysis • Microsoft SQL Server • Testing • Power BI**  
-> Independent, AI-assisted educational portfolio case study. Fictional multinational retailer, Serbia/Croatia/Slovenia, 6 warehouses, 25 relational tables, 100,000 synthetically generated historical orders. **Not a real client deployment.**
+> Independent, educational portfolio case study. Fictional multinational retailer, Serbia/Croatia/Slovenia, 6 warehouses, 25 relational tables, 100,000 synthetically generated historical orders. **Not a real client deployment.**
 
 ![Logical ERD](assets/retailops_erd.png)
 
@@ -103,6 +103,14 @@ For per-test entries see [`testing/test_execution_log.csv`](testing/test_executi
 
 Start with the [BRD](business-analysis/01_BRD.md) and [user stories](business-analysis/02_user_stories_acceptance.md); trace the prevention-of-overselling requirement into the allocation stored procedure, N01 and concurrency C01. Show SQL execution evidence, then the three Power BI pages. Explain data-grain choices, the cancellation fix in the sales KPI and the limitations of the synthetic model. The presentation deck is in [`deliverables/`](deliverables/).
 
-## Attribution
 
-This is an **independent AI-assisted educational simulation**, not commissioned work for a company. Requirements, design, test scenarios, code and documentation were drafted with AI assistance and iteratively debugged through user-run tests. Local results should be independently reproducible and understood before being cited in an internship application. Code and original materials use the included [MIT license](LICENSE).
+## Power BI Dashboards
+
+### 1. Sales Performance
+![Sales Performance](assets/sales_dashboard.png)
+
+### 2. Inventory & Supply Chain
+![Inventory Dashboard](assets/inventory_dashboard.png)
+
+### 3. Order Fulfillment
+![Fulfillment Dashboard](assets/fulfillment_dashboard.png)
