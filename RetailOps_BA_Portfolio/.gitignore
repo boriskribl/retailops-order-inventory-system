@@ -1,0 +1,14 @@
+# Generated and local files
+*.bak
+*.mdf
+*.ldf
+*.tmp
+*.log
+.DS_Store
+__pycache__/
+.venv/
+~$*.docx
+
+# Power BI local editor cache and temporary backups
+.pbi/
+*.pbix.autorecovery

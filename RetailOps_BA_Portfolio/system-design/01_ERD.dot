@@ -1,0 +1,74 @@
+digraph RetailOps {
+graph [rankdir=LR, splines=polyline, overlap=false, nodesep=0.36, ranksep=1.0, bgcolor="white", fontsize=22, label="RetailOps | Relational System Overview (25 tables)", labelloc=t, fontname="Arial"];
+node [shape=box, style="rounded,filled", color="#475569", penwidth=1, fillcolor="white", fontname="Arial", fontsize=10, margin="0.1,0.08"];
+edge [color="#94a3b8", arrowsize=0.5, penwidth=0.8];
+subgraph cluster_0 { label="Geo & People"; bgcolor="#f0f6ff"; color="#cbd5e1"; style="rounded"; fontname="Arial";
+"Countries";
+"Cities";
+"Stores";
+"Warehouses";
+"Customers";
+"CustomerAddresses";
+}
+subgraph cluster_1 { label="Catalog & Supply"; bgcolor="#f3f9f5"; color="#cbd5e1"; style="rounded"; fontname="Arial";
+"Categories";
+"Products";
+"Suppliers";
+"SupplierProducts";
+}
+subgraph cluster_2 { label="Orders & Fulfillment"; bgcolor="#fff8ed"; color="#cbd5e1"; style="rounded"; fontname="Arial";
+"SalesOrders";
+"SalesOrderItems";
+"InventoryReservations";
+"OrderFulfillments";
+"FulfillmentItems";
+"Carriers";
+"Shipments";
+}
+subgraph cluster_3 { label="Inventory & Procurement"; bgcolor="#f6f3ff"; color="#cbd5e1"; style="rounded"; fontname="Arial";
+"Inventory";
+"InventoryMovements";
+"PurchaseOrders";
+"PurchaseOrderItems";
+"GoodsReceipts";
+}
+subgraph cluster_4 { label="Returns & Audit"; bgcolor="#fff2f2"; color="#cbd5e1"; style="rounded"; fontname="Arial";
+"ReturnRequests";
+"ReturnItems";
+"AuditEvents";
+}
+"Countries" -> "Cities" [color="#a1a1aa"];
+"Cities" -> "Stores" [color="#a1a1aa"];
+"Cities" -> "Warehouses" [color="#a1a1aa"];
+"Countries" -> "Customers" [color="#a1a1aa"];
+"Customers" -> "CustomerAddresses" [color="#a1a1aa"];
+"Cities" -> "CustomerAddresses" [color="#a1a1aa"];
+"Categories" -> "Products" [color="#a1a1aa"];
+"Countries" -> "Suppliers" [color="#a1a1aa"];
+"Suppliers" -> "SupplierProducts" [color="#a1a1aa"];
+"Products" -> "SupplierProducts" [color="#a1a1aa"];
+"Warehouses" -> "Inventory" [color="#a1a1aa"];
+"Products" -> "Inventory" [color="#a1a1aa"];
+"Inventory" -> "InventoryMovements" [color="#a1a1aa"];
+"Customers" -> "SalesOrders" [color="#a1a1aa"];
+"CustomerAddresses" -> "SalesOrders" [color="#a1a1aa"];
+"Stores" -> "SalesOrders" [color="#a1a1aa"];
+"SalesOrders" -> "SalesOrderItems" [color="#a1a1aa"];
+"Products" -> "SalesOrderItems" [color="#a1a1aa"];
+"SalesOrderItems" -> "InventoryReservations" [color="#a1a1aa"];
+"Warehouses" -> "InventoryReservations" [color="#a1a1aa"];
+"SalesOrders" -> "OrderFulfillments" [color="#a1a1aa"];
+"Warehouses" -> "OrderFulfillments" [color="#a1a1aa"];
+"OrderFulfillments" -> "FulfillmentItems" [color="#a1a1aa"];
+"SalesOrderItems" -> "FulfillmentItems" [color="#a1a1aa"];
+"OrderFulfillments" -> "Shipments" [color="#a1a1aa"];
+"Carriers" -> "Shipments" [color="#a1a1aa"];
+"Suppliers" -> "PurchaseOrders" [color="#a1a1aa"];
+"Warehouses" -> "PurchaseOrders" [color="#a1a1aa"];
+"PurchaseOrders" -> "PurchaseOrderItems" [color="#a1a1aa"];
+"Products" -> "PurchaseOrderItems" [color="#a1a1aa"];
+"PurchaseOrderItems" -> "GoodsReceipts" [color="#a1a1aa"];
+"SalesOrders" -> "ReturnRequests" [color="#a1a1aa"];
+"ReturnRequests" -> "ReturnItems" [color="#a1a1aa"];
+"SalesOrderItems" -> "ReturnItems" [color="#a1a1aa"];
+}

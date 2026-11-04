@@ -1,0 +1,3 @@
+QueryID,RunDate,DatabaseRows,IndexCondition,ElapsedMs,CPUms,LogicalReads,PlanNotes,Conclusion
+Q01,,,,,,,,
+Q02,,,,,,,,

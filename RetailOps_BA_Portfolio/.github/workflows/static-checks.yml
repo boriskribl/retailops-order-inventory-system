@@ -1,0 +1,12 @@
+name: RetailOps static project checks
+on:
+  push:
+  pull_request:
+jobs:
+  verify-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Validate bundled materials (not SQL runtime)
+        run: python3 tools/validate_bundle.py

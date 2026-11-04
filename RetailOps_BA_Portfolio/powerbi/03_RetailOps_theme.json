@@ -1,0 +1,10 @@
+{
+  "name": "RetailOps | Executive Navy + Teal",
+  "dataColors": ["#0F766E", "#2563EB", "#E7A336", "#7C3AED", "#D95B59", "#64748B", "#10B981", "#EA580C"],
+  "background": "#F8FAFC",
+  "foreground": "#152238",
+  "tableAccent": "#0F766E",
+  "good": "#0F766E",
+  "neutral": "#E7A336",
+  "bad": "#C2413B"
+}

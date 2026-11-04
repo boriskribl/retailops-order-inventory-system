@@ -1,0 +1,55 @@
+// Power BI Desktop > Modeling > New measure. Paste ONE measure at a time.
+// Table names: Sales, Inventory, Fulfillment, Procurement.
+
+Orders Placed = DISTINCTCOUNT(Sales[OrderID])
+
+Delivered Orders =
+CALCULATE(DISTINCTCOUNT(Sales[OrderID]), Sales[OrderStatus] = "DELIVERED")
+
+Ordered Value EUR = SUM(Sales[OrderedValueEUR])
+
+Recognized Revenue EUR = SUM(Sales[RecognizedRevenueEUR])
+
+Net Revenue EUR = SUM(Sales[NetRevenueEUR])
+
+Returned Value EUR = SUM(Sales[ReturnedValueEUR])
+
+Net Margin EUR = SUM(Sales[NetMarginEUR])
+
+Net Margin % = DIVIDE([Net Margin EUR], [Net Revenue EUR])
+
+Return Units = SUM(Sales[ReturnedQty])
+
+Delivered Units = CALCULATE(SUM(Sales[Quantity]), Sales[OrderStatus]="DELIVERED")
+
+Return Rate % = DIVIDE([Return Units], [Delivered Units])
+
+Available Units = SUM(Inventory[AvailableQty])
+
+Reserved Units = SUM(Inventory[QuantityReserved])
+
+Inventory Value EUR = SUM(Inventory[InventoryValueEUR])
+
+Low Stock SKU Locations =
+CALCULATE(COUNTROWS(Inventory), Inventory[StockHealth]="REORDER")
+
+Delivered Shipments =
+CALCULATE(COUNTROWS(Fulfillment), Fulfillment[ShipmentStatus]="DELIVERED")
+
+On Time Shipments = SUM(Fulfillment[OnTimeDeliveredFlag])
+
+On Time Delivery % = DIVIDE([On Time Shipments], [Delivered Shipments])
+
+Average Delivery Hours = AVERAGE(Fulfillment[DeliveryHours])
+
+Overdue Open Shipments = SUM(Fulfillment[OverdueOpenFlag])
+
+Ordered PO Units = SUM(Procurement[QuantityOrdered])
+
+Received PO Units = SUM(Procurement[ReceivedQty])
+
+Outstanding PO Units = SUM(Procurement[OutstandingQty])
+
+// New calculated TABLE (Modeling > New table):
+// Calendar = CALENDAR(DATE(2024,1,1),TODAY())
+// After creating Calendar, create: Calendar[Date] (1) to Sales[OrderDate] (*)

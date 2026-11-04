@@ -1,0 +1,12 @@
+TestID,RequirementID,ExpectedResult,ActualResult,Status,RunDate,Notes
+T01,FR-01|FR-03|FR-04|FR-06,Order lifecycle and restock successful,,NOT RUN,,
+T02,FR-05,Cancel releases reservation,,NOT RUN,,
+T03,FR-01,Repeated key returns same order,,NOT RUN,,
+T04,FR-07,Receipt increments inventory,,NOT RUN,,
+T05,NFR-02,Inventory ledger reconciles,,NOT RUN,,
+T06,FR-03,Active reservations equal reserved stock,,NOT RUN,,
+T07,FR-03,Fulfilled order items fully allocated,,NOT RUN,,
+N01,FR-03,Insufficient stock rejected without residue,,NOT RUN,,
+N02,FR-07,Over-receipt rejected,,NOT RUN,,
+C01,NFR-02,Concurrent last-unit allocations never oversell,,NOT RUN,,
+T08,FR-04,Split order produces 2 fulfillments with full units,,NOT RUN,,

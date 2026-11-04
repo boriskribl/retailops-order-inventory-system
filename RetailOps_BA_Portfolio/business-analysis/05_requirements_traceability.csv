@@ -1,0 +1,16 @@
+RequirementID,Requirement,Priority,DesignArtifact,SQLImplementation,TestID,Status
+FR-01,Create validated traceable order with idempotency,Must,01_ERD.md,usp_CreateOrder,T01|T03|N03,IMPLEMENTED_UNVERIFIED
+FR-02,Normalize order lines and capture price snapshots,Must,01_ERD.md,usp_CreateOrder,T01,IMPLEMENTED_UNVERIFIED
+FR-03,Allocate stock atomically without overselling,Must,02_process_to_be.bpmn,usp_AllocateOrder,T01|N01|C01,IMPLEMENTED_UNVERIFIED
+FR-04,Domestic-first splitting across warehouses,Must,02_process_to_be.bpmn,usp_AllocateOrder,T08|C01,IMPLEMENTED_UNVERIFIED
+FR-05,Cancel before dispatch and release reserved stock,Must,04_sequence_diagram.md,usp_CancelOrder,T02,IMPLEMENTED_UNVERIFIED
+FR-06,Dispatch and delivery lifecycle,Must,04_sequence_diagram.md,usp_DispatchFulfillment|usp_MarkShipmentDelivered,T01,IMPLEMENTED_UNVERIFIED
+FR-07,Receive PO goods without overreceipt,Must,01_ERD.md,usp_ReceivePurchaseOrderItem,T04|N02,IMPLEMENTED_UNVERIFIED
+FR-08,Receive approved returns and restock,Must,01_ERD.md,usp_ReceiveReturn,T01,IMPLEMENTED_UNVERIFIED
+FR-09,Audit movements and operational events,Should,01_ERD.md,InventoryMovements|AuditEvents,T05,IMPLEMENTED_UNVERIFIED
+FR-10,Provide standardized management insights,Should,05_system_context.md,vw_SalesFact|vw_InventoryHealth|vw_FulfillmentPerformance|vw_ProcurementPerformance|vw_DailySales,BITEST-01,IMPLEMENTED_UNVERIFIED
+FR-11,Raise reorder flags,Should,05_system_context.md,vw_InventoryHealth,BITEST-02,IMPLEMENTED_UNVERIFIED
+NFR-01,Constrain invalid FK and negative inventory,Must,01_ERD.md,01_schema.sql,T05|T06,IMPLEMENTED_UNVERIFIED
+NFR-02,Reconcile ledger and reservations,Must,01_ERD.md,01_integration_tests.sql,T05|T06,IMPLEMENTED_UNVERIFIED
+NFR-03,Document query optimization evidence,Should,05_system_context.md,04_indexes.sql|02_performance_study.sql,PERF-01,PREPARED_NOT_EXECUTED
+NFR-04,Protect customer information,Must,06_security_and_limits.md,Fictional data + deployment controls not implemented,SEC-01,PARTIAL

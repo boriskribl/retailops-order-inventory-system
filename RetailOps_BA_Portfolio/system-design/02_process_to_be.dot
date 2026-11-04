@@ -1,0 +1,25 @@
+digraph process {
+graph [rankdir=LR, bgcolor="white", nodesep=0.55, ranksep=0.8, labelloc=t, label="RetailOps | TO-BE order fulfillment", fontname="Arial", fontsize=18];
+node [shape=box, style="rounded,filled", fillcolor="#eef2ff", color="#475569", fontname="Arial", fontsize=10];
+"Start" [label="Order received", shape=oval];
+"Validate" [label="Validate order + address", shape=box];
+"CheckStock" [label="Read available stock", shape=box];
+"GatewayStock" [label="All lines available?", shape=diamond];
+"Reserve" [label="Atomically reserve stock", shape=box];
+"CreateFulfillment" [label="Create warehouse fulfillments", shape=box];
+"Dispatch" [label="Dispatch + decrement stock", shape=box];
+"ConfirmDelivery" [label="Confirm delivered timestamp", shape=box];
+"EndSuccess" [label="Delivered", shape=oval];
+"Reject" [label="Reject: no stock / rollback", shape=box];
+"EndFailure" [label="Order remains NEW", shape=oval];
+"Start" -> "Validate";
+"Validate" -> "CheckStock";
+"CheckStock" -> "GatewayStock";
+"GatewayStock" -> "Reserve" [label="Yes"];
+"GatewayStock" -> "Reject" [label="No"];
+"Reserve" -> "CreateFulfillment";
+"CreateFulfillment" -> "Dispatch";
+"Dispatch" -> "ConfirmDelivery";
+"ConfirmDelivery" -> "EndSuccess";
+"Reject" -> "EndFailure";
+}
