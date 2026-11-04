@@ -1,12 +1,13 @@
-TestID,RequirementID,ExpectedResult,ActualResult,Status,RunDate,Notes
-T01,FR-01|FR-03|FR-04|FR-06,Order lifecycle and restock successful,,NOT RUN,,
-T02,FR-05,Cancel releases reservation,,NOT RUN,,
-T03,FR-01,Repeated key returns same order,,NOT RUN,,
-T04,FR-07,Receipt increments inventory,,NOT RUN,,
-T05,NFR-02,Inventory ledger reconciles,,NOT RUN,,
-T06,FR-03,Active reservations equal reserved stock,,NOT RUN,,
-T07,FR-03,Fulfilled order items fully allocated,,NOT RUN,,
-N01,FR-03,Insufficient stock rejected without residue,,NOT RUN,,
-N02,FR-07,Over-receipt rejected,,NOT RUN,,
-C01,NFR-02,Concurrent last-unit allocations never oversell,,NOT RUN,,
-T08,FR-04,Split order produces 2 fulfillments with full units,,NOT RUN,,
+﻿TestID,RequirementID,ExpectedResult,ActualResult,Status,RunDate,Notes
+T01,FR-01|FR-03|FR-04|FR-06,Order lifecycle and restock successful,"PASS T01 lifecycle, stock decrement, delivery and restock",PASS,2026-11-04,User-run SSMS; corrected T01 r.Quantity
+T02,FR-05,Cancel releases reservation,PASS T02 cancellations and reservation release,PASS,2026-11-04,User-run SSMS
+T03,FR-01,Repeated key returns same order,PASS T03 repeated external request returns same order ID,PASS,2026-11-04,User-run SSMS
+T04,FR-07,Receipt increments inventory,PASS T04 procurement receipt increments inventory,PASS,2026-11-04,User-run SSMS
+T05,NFR-02,Inventory ledger reconciles,PASS T05 inventory ledger reconciliation,PASS,2026-11-04,User-run SSMS
+T06,FR-03,Active reservations equal reserved stock,PASS T06 active reservation balances,PASS,2026-11-04,User-run SSMS
+T07,FR-03,Fulfilled order items fully allocated,PASS T07 fulfilled quantity equals ordered quantity,PASS,2026-11-04,Set-based aggregate with temp-table index
+T08,FR-04,Split order produces 2 fulfillments with full units,PASS T08 split allocation creates two warehouse fulfillments,PASS,2026-11-04,User-run SSMS
+N01,FR-03,Insufficient stock rejected without residue,PASS N01 insufficient stock rolls back cleanly,PASS,2026-11-04,Expected error 51102 on stock allocation
+N02,FR-07,Over-receipt rejected,PASS N02 over-receipt rejected,PASS,2026-11-04,Expected error 51502
+N03,FR-01,Conflicting idempotency request rejected,PASS N03 idempotency payload conflict rejected,PASS,2026-11-04,Expected error 51009
+C01,NFR-02,Concurrent last-unit allocations never oversell,Session A committed; Session B rejected (51102) after ~3317 ms; cleanup cancelled both test orders,PASS,2026-11-04,Two-SSMS-session manual test; results shown by user

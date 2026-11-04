@@ -10,9 +10,10 @@
 
 | Metric | Definition / formula | Report filter / unit | Source |
 |---|---|---|---|
-| Orders placed | Distinct order IDs | Includes all statuses; count | SalesFact |
+| Orders placed | Distinct order IDs | Includes all statuses **including CANCELLED**; count | SalesFact |
 | Delivered orders | Distinct order IDs with status DELIVERED | Delivered only; count | SalesFact |
-| Gross ordered value | Sum(Quantity × price snapshot) | All order statuses; EUR | SalesFact.OrderedValueEUR |
+| Gross ordered value (raw fact) | Sum(Quantity × price snapshot) | All order statuses, **including CANCELLED**; EUR | SalesFact.OrderedValueEUR |
+| Active/non-cancelled ordered value | Sum(OrderedValueEUR) where OrderStatus <> CANCELLED | Excludes CANCELLED, includes NEW/RESERVED/SHIPPED/DELIVERED; EUR | DailySales.OrderedValueEUR |
 | Recognized revenue | Sum(Quantity × price) when whole order DELIVERED | Delivered only; EUR | SalesFact.RecognizedRevenueEUR |
 | Returned value | Sum(received-return quantity × original price) | Delivered orders only; EUR | SalesFact.ReturnedValueEUR |
 | **Net revenue** | Recognized revenue − returned value | Delivered orders; EUR | SalesFact.NetRevenueEUR |
@@ -29,7 +30,7 @@
 
 ## DAX modeling guidance
 
-Use a dedicated `DimCountry` lookup (`Countries`, ISOCode) rather than relating fact-to-fact tables. A date table may relate to `Sales[OrderDate]`; if you also want shipment-date filtering, use a separate role-playing date table or separate measures. Power BI import refresh is a deliberate manual step; this bundle does not contain a functioning `.pbix`.
+Use a dedicated `DimCountry` lookup (`Countries`, ISOCode) rather than relating fact-to-fact tables. A date table may relate to `Sales[OrderDate]`; if you also want shipment-date filtering, use a separate role-playing date table or separate measures. Power BI import refresh is a deliberate manual step. A three-page `.pbix` was built in Power BI Desktop in the local project; only claim it is in this repository after the binary is copied and pushed.
 
 ## Interpreting synthetic results
 
