@@ -74,17 +74,33 @@ FROM dbo.PurchaseOrderItems pi JOIN dbo.PurchaseOrders po ON po.PurchaseOrderID=
 JOIN dbo.Suppliers s ON s.SupplierID=po.SupplierID
 LEFT JOIN ReceiptAgg r ON r.PurchaseOrderItemID=pi.PurchaseOrderItemID;
 GO
+
 CREATE OR ALTER VIEW dbo.vw_DailySales
 AS
-SELECT OrderDate,DestinationCountry,SalesChannel,
-       COUNT(DISTINCT CASE WHEN OrderStatus='DELIVERED' THEN OrderID END) DeliveredOrders,
-       COUNT(DISTINCT OrderID) AllOrders,
-       SUM(OrderedValueEUR) OrderedValueEUR,
-       SUM(NetRevenueEUR) NetRevenueEUR,
-       SUM(NetMarginEUR) NetMarginEUR,
-       SUM(ReturnedValueEUR) ReturnedValueEUR
+SELECT
+    OrderDate,
+    DestinationCountry,
+    SalesChannel,
+    COUNT(DISTINCT CASE
+        WHEN OrderStatus = 'DELIVERED'
+        THEN OrderID
+    END) AS DeliveredOrders,
+    COUNT(DISTINCT OrderID) AS AllOrders,
+    SUM(CASE
+        WHEN OrderStatus <> 'CANCELLED'
+        THEN OrderedValueEUR
+        ELSE 0
+    END) AS OrderedValueEUR,
+    SUM(NetRevenueEUR) AS NetRevenueEUR,
+    SUM(NetMarginEUR) AS NetMarginEUR,
+    SUM(ReturnedValueEUR) AS ReturnedValueEUR
 FROM dbo.vw_SalesFact
-GROUP BY OrderDate,DestinationCountry,SalesChannel;
+GROUP BY
+    OrderDate,
+    DestinationCountry,
+    SalesChannel;
 GO
+
 PRINT 'Five analytical views ready.';
 GO
+
