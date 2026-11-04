@@ -1,80 +1,54 @@
-# Power BI dashboard specification and build guide
+# Power BI — implemented report and reproducibility guide
 
-**Deliverable:** documented *report build kit*, not a built `.pbix`. Power BI Desktop runs on your Windows computer and must connect to your local SQL Server instance. Import the four reporting views and paste DAX measures as described below.
+**Artifact:** `RetailOps_Operations_Dashboard.pbix` — a three-page Power BI Desktop report built locally using **five** SQL reporting views, not a design-only kit. Supporting screenshots are in `assets/`. The dataset is synthetic.
 
-## 1. Connection steps
+## Connection / refresh on a fresh machine
 
-1. Open Power BI Desktop → **Get data → SQL Server**.
-2. Server: `.\SQLEXPRESS` (or the full `DESKTOP-…\SQLEXPRESS` shown in SSMS). Database: `RetailOpsDB`.
-3. **Import** mode, Windows credentials. Choose `dbo.vw_SalesFact`, `dbo.vw_InventoryHealth`, `dbo.vw_FulfillmentPerformance`, and `dbo.vw_ProcurementPerformance`. Rename queries to **Sales**, **Inventory**, **Fulfillment**, **Procurement** respectively. Use `01_PowerQuery_M.pq` for the equivalent explicit Power Query paths if desired.
-4. Import `Countries` and rename to **DimCountry**. Create 1:* relationships from `DimCountry[ISOCode]` to `Sales[DestinationCountry]`, `Inventory[Country]`, and `Fulfillment[DestinationCountry]` (single direction).
-5. Power BI **Model view**: mark/date `Sales[OrderDate]` type Date; build a Calendar table for Date to Sales[OrderDate]. Avoid joining fact-to-fact views.
-6. Create one DAX measure at a time from `02_DAX_measures.dax`. Format EUR measures as `€#,##0`, percentages as `0.0%`, inventory counts as whole numbers.
-7. View → Themes → Browse for themes → import `03_RetailOps_theme.json`.
-8. Build the three pages below. Then save as `RetailOps_Operations_Dashboard.pbix` in this folder, create screenshots and commit only non-sensitive examples to GitHub.
+1. Install and populate a new disposable `RetailOpsDB` by following the repo `README.md`. Do **not** rerun the seed script on an existing database.
+2. Open the included `.pbix` in Power BI Desktop.
+3. Select **Transform data → Data source settings** and change the SQL Server source to the machine's local instance (e.g. `.\SQLEXPRESS`), database `RetailOpsDB`, Windows Authentication / Import mode.
+4. Verify the five loaded logical tables and backing views:
 
-## 2. Page 1 — Sales Performance
+| Power BI table | SQL view |
+|---|---|
+| `DailySales` | `dbo.vw_DailySales` |
+| `Sales` | `dbo.vw_SalesFact` |
+| `Inventory` | `dbo.vw_InventoryHealth` |
+| `Fulfillment` | `dbo.vw_FulfillmentPerformance` |
+| `Procurement` | `dbo.vw_ProcurementPerformance` |
 
-**Question:** Which markets and product categories generate value, and what is the cost of returns?
+5. Refresh data. The report was created with Power BI's **Auto date/time disabled** to avoid a local relationship/cyclic-reference issue encountered during build.
+6. Check visuals, labels, measures and reconciliation to SQL. The `02_DAX_measures.dax` file is a *reference library*, not necessarily an exact export of every measure in the PBIX.
 
-| Position | Visual | Data |
-|---|---|---|
-| Top row | KPI cards | Net Revenue EUR, Net Margin %, Delivered Orders, Return Rate % |
-| Main left | Line chart | Calendar[Date] by Net Revenue EUR, drill to Month |
-| Main right | Clustered bar | Sales[DestinationCountry] vs Net Revenue EUR |
-| Bottom left | Horizontal bar | Sales[CategoryName] vs Net Revenue EUR |
-| Bottom right | Matrix | SKU/ProductName vs revenue / margin / returns |
-| Slicers | Country, date, sales channel | DimCountry[ISOCode], Calendar, Sales[SalesChannel] |
+## Page 1 — Sales Performance
 
-**Suggested insight prompts:** Which market has the highest return-adjusted revenue? Which categories have thin margins? Do seasonal peaks reflect genuine data or the synthetic generation design?
+**Implemented:** Cards showing total ordered value (excluding cancelled orders), net revenue, orders placed, delivered orders; monthly order trend; country sales comparison; online vs store sales-channel donut; country and order-date slicers.
 
-## 3. Page 2 — Inventory & Supply Chain
+**Key definition:** `DailySales[OrderedValueEUR]` excludes cancelled orders in the SQL view. Raw order-line `Sales[OrderedValueEUR]` does not; any DAX aggregation over the granular Sales table must filter `Sales[OrderStatus] <> "CANCELLED"` to match the reporting KPI. `AllOrders` still includes cancelled orders.
 
-**Question:** Where are stockouts likely, and where is capital tied up?
+**Design improvement:** The 100k-order seed and test scenarios can create striking synthetic monthly changes. Explain those as synthetic generator artifacts rather than demand forecasts.
 
-| Position | Visual | Data |
-|---|---|---|
-| Top | KPI cards | Available Units, Inventory Value EUR, Low Stock SKU Locations, Outstanding PO Units |
-| Middle left | Matrix, conditional colors | WarehouseCode × ProductName, AvailableQty |
-| Middle right | Bar | WarehouseCode vs InventoryValueEUR |
-| Bottom left | Table | SKU / Warehouse / Available / ReorderPoint / flag REORDER |
-| Bottom right | Bar | SupplierName vs OutstandingQty |
+## Page 2 — Inventory & Supply Chain
 
-**Caution:** Product inventory costs use current catalogue standard costs. They are illustrative, not audited inventory valuation.
+**Implemented:** Total/available/reserved stock and count of low-stock warehouse-product rows; available stock by warehouse; low-stock table; procurement totals and supplier comparison.
 
-## 4. Page 3 — Fulfillment & Service
+**Observation:** 30 warehouse-product rows at/below their reorder points were observed locally. One product showed zero stock in several warehouse rows; review planned replenishment before proposing changes to reorder policy. Procurement fulfillment should be displayed in percentage format, not as a raw fraction.
 
-**Question:** What is the on-time delivery rate, and which carrier/market needs intervention?
+## Page 3 — Order Fulfillment
 
-| Position | Visual | Data |
-|---|---|---|
-| Top | KPI cards | Delivered Shipments, On Time Delivery %, Average Delivery Hours, Overdue Open Shipments |
-| Middle left | Bar | CarrierName vs On Time Delivery % |
-| Middle right | Matrix | DestinationCountry × CarrierName, delivery %, delivered shipments |
-| Bottom | Table | ShipmentID, WarehouseCode, ExpectedDeliveryAt, DeliveredAt, OverdueOpenFlag |
+**Implemented:** Total and delivered shipments; on-time-delivery percentage (about 80% in this synthetic sample); average delivery days (about 2.60); delivered shipments by country; status split; carrier comparison.
 
-**Slicers:** DimCountry[ISOCode], CarrierName, ShipmentStatus. These allow operational exception exploration.
+**Interpretation caution:** Similar carrier on-time results reflect simulated distribution; no real carrier ranking is justified.
 
-## 5. Business insight slide (do not claim unmeasured facts)
+## Acceptance / release checks
 
-After importing and refreshing against your own SQL instance, capture 3 genuinely computed findings and proposed actions. Suggested format:
+- [x] Report .pbix created and committed.
+- [x] Three page screenshots created and committed.
+- [x] Local refresh reported working after correcting date/time settings.
+- [x] KPI results cross-checked with local SQL examples.
+- [ ] Fresh-machine data source repointing, refresh and external reproduction not independently confirmed.
+- [ ] Full visual presentation review, labels and percent formats to be polished.
 
-- **Observed on your synthetic dataset:** e.g. “Low-stock status concentrated in X SKUs across Y warehouses.” Add screenshot and query evidence.
-- **Hypothesis:** “Lower reorder points for slow movers / increase buffer for high-demand items.”
-- **Recommendation:** Pilot threshold adjustment, monitor available stock and supplier lead time.
-- **Limitations:** Synthetic data, fixed routing rules, no real transaction volume, no economic causal test.
+## Reporting limitations
 
-## 6. Acceptance checklist
-
-- [ ] All four reporting views load and Refresh completes without errors.
-- [ ] Sales row count equals `SELECT COUNT(*) FROM dbo.vw_SalesFact`.
-- [ ] Country slicer filters Sales, Inventory and Fulfillment (via DimCountry).
-- [ ] Total Net Revenue in Power BI equals the SQL sum from `vw_SalesFact`.
-- [ ] Delivered Orders uses distinct ID count, not order line count.
-- [ ] Return Rate counts returned units against delivered units, not all placed units.
-- [ ] Screenshots include synthetic-data disclosure and date of refresh.
-- [ ] `.pbix` saved and screenshots committed if you choose to publish them.
-
-## 7. Stretch goals
-
-Add role-playing dates for shipment delivery, drillthrough to OrderID (via SQL), reorder action recommendations, incremental refresh for larger datasets, and a reconciliation/data-quality page. These are **not implemented** in this project bundle.
+All sales, inventory, procurement and shipment records are synthetic. EUR prices, margins, shipment SLA and replenishment rules are educational assumptions, not validated client policies. Power BI Service sharing, row-level security, incremental refresh and real-time integrations are not implemented.

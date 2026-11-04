@@ -90,6 +90,22 @@ The following results were reported from actual SSMS execution on a local SQL Se
 
 For per-test entries see [`testing/test_execution_log.csv`](testing/test_execution_log.csv) and for observed timings see [`testing/performance_results_template.csv`](testing/performance_results_template.csv). Screenshots and exact SSMS outputs should be retained as evidence when presenting the project.
 
+## Business analysis findings (synthetic demo data)
+
+The figures below were observed in the local SQL Server/Power BI demo on 2026-11-04. They describe the **synthetic test dataset** and do not imply real-world retailer performance. Totals may change after further demo or test transactions.
+
+| KPI / finding | Observed outcome | BA interpretation / proposed action |
+|---|---:|---|
+| Distinct placed orders | 100,011 | Includes additional local test/demo orders beyond the original 100,000-order seed; count is not the same as successful deliveries. |
+| Delivered-order net revenue | EUR 32,305,223.08 | Reconcile the Sales dashboard with the SQL reporting layer; do not include cancelled-order anomalies in ordered value. |
+| Net margin under simplified model | EUR 14,538,766.50 | Treat as a synthetic analytical measure, not audited net profit. |
+| Return value | EUR 56,949.39 | Use alongside volumes and return reasons before recommending policy changes. |
+| Revenue by market | RS EUR 10.770m; HR EUR 10.769m; SI EUR 10.766m | Near-identical markets and uniform 45% margins reflect generation rules; avoid country-level performance claims. |
+| Inventory at/below reorder point | 30 warehouse-product rows | Review low-stock exceptions, reorder points, outstanding purchase orders and lead time before prioritizing replenishment. |
+| On-time delivery rate | approximately 80% | Demonstrates KPI and carrier analysis; verify SLA definitions and distribution in a real-world scenario. |
+
+**Recommended next action (simulation):** Build a weekly low-stock exceptions review that joins inventory flags with outstanding procurement and supplier lead times. Validate with a stakeholder before treating proposed thresholds as policy.
+
 ## Limitations and interpretation
 
 - All entities, customers, orders and operational KPIs are **synthetic**, not client data. Distribution shifts and seasonality are artifacts of the seed generator and should never be presented as empirical retail trends.

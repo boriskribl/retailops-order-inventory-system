@@ -170,16 +170,16 @@ COMMIT
 
 | ID | Requirement | Evidence and validation status |
 |---|---|---|
-| NFR-01 | Declarative integrity | Schema CHECK, FK, UQ / test suite authored, not executed on target host |
-| NFR-02 | Atomic stock writes | TRY/CATCH, XACT_ABORT, transactions, row locking; concurrency manual test planned |
-| NFR-03 | Measurable reporting query performance | Targeted indexes + execution-plan script; timing results NOT measured |
+| NFR-01 | Declarative integrity | Schema CHECK, FK, UQ; local validation V01–V06 passed and optimized V07 returned MismatchCount=0 |
+| NFR-02 | Atomic stock writes | TRY/CATCH, XACT_ABORT, transactions and locks; local two-session C01 observed expected rejection (SQL 51102) |
+| NFR-03 | Measurable reporting query performance | Targeted indexes + timing observations: 479 ms initial, 439 ms follow-up, 1,975 logical reads both; no measured optimization claimed |
 | NFR-04 | Privacy and access control | Synthetic data; GRANT/DENY and credential layer are deployment gaps |
 | NFR-05 | Operational recoverability | Scripts are ordered, idempotency for order insert; backups not implemented |
 | NFR-06 | Lineage | Requirement IDs, test IDs, schema diagram, SQL view names, GitHub READMEs |
 
 ## 9. Test strategy
 
-Integration tests T01–T08 and expected-failure tests N01–N02 are supplied. Actual execution is **not asserted**. Manual multi-session C01 verifies last-unit concurrency and should run on a copy of the database. Business intelligence acceptance requires Power BI Desktop to create the PBIX and validate slicers/refresh.
+Integration tests **T01–T08** and expected-failure tests **N01–N03** passed in reported local SQL Server execution. Manual two-session C01 rejected a competing allocation with expected SQL error `51102`. Post-install V01–V06 passed and a separate optimized V07 returned `MismatchCount = 0`. The three-page Power BI Desktop `.pbix` was built and locally refreshed. These results are evidence from an educational demo, **not independently replicated CI or production validation**.
 
 ## 10. Limitations and design debt
 
@@ -189,7 +189,7 @@ Integration tests T01–T08 and expected-failure tests N01–N02 are supplied. A
 4. Supplier approval and return approval are represented as modeled states and direct seed records, not as implemented actor workflows.
 5. No dedicated order-item partial shipment retry/reallocation flow after a warehouse has dispatched.
 6. Current-state process and business targets are fictional proposals; no stakeholder interviews occurred.
-7. Reports are source views plus Power Query/DAX and design guidance, **not an actual Power BI PBIX file**.
+7. A three-page Power BI Desktop `.pbix` and screenshots are included. Reproducing refresh requires a separately configured local SQL Server instance and synthetic demo data.
 
 ## 11. Decision log
 
@@ -199,5 +199,5 @@ Integration tests T01–T08 and expected-failure tests N01–N02 are supplied. A
 | ADR-02 | EUR standard demo | Simple comparisons, but not financial-grade for Serbia |
 | ADR-03 | All-or-nothing stock allocation | Correctness/simple acceptance; no backorders |
 | ADR-04 | Warehouse-scoped fulfillment | Represents split shipping; no cross-border cost optimization |
-| ADR-05 | Import BI views | Easier reproducibility; no live dashboard until configured |
+| ADR-05 | Import BI views | Local three-page Power BI report is built; refresh still requires a configured local SQL Server |
 | ADR-06 | No frontend | BA/SA scope and technical depth prioritized over UI presentation |

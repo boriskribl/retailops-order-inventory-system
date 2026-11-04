@@ -33,12 +33,21 @@ Zatim pokreni `testing/01_integration_tests.sql` i `testing/02_negative_tests.sq
 
 **Nemoj dva puta da pokrećeš 01_schema.sql ili 03_seed_data.sql.** Baza je predviđena da se prvi put pravi prazna i bez brisanja postojećih podataka.
 
-## Šta nije završeno bez tvog računara
+## Šta je potvrđeno na lokalnom računaru (2026-11-04)
 
-Nisam se povezao na tvoj SQL Server i nisam mogao da izvršim SQL na tvojoj instalaciji. Testovi su **napisani, ali nisu potvrđeni na tom serveru**. Power BI `.pbix` mora da se napravi u Power BI Desktop-u; u paketu je sve za njegovo povezivanje i izradu, ali nema gotovog aktivnog dashboard-a. GitHub repozitorijum nije automatski objavljen.
+- SQL Server Express: kreirana šema sa 25 tabela, sedam procedura i pet analitičkih pogleda.
+- Evidentirani rezultati integracionih testova: **T01–T08 PASS**; negativnih testova **N01–N03 PASS**.
+- Konkurentni scenario **C01**: jedna sesija rezervisala dostupnu jedinicu, druga je odbijena očekivanom SQL greškom `51102`.
+- Validacije **V01–V06 PASS**; optimizovani V07 proverio `MismatchCount = 0`.
+- Power BI `.pbix` se nalazi u `powerbi/` i sadrži tri stranice; screenshotovi su u `assets/`.
+- SQL poslovne analize su lokalno izvršene; rezultati su ilustrativni jer je baza sintetička.
 
-## Zašto je ovo dobro za Business Analyst praksu
+Ovo su **lokalno prijavljeni rezultati**, a ne nezavisna reprodukcija, automatski CI test ili verifikacija na produkcionom serveru. Pogledaj `README.md`, `testing/test_execution_log.csv` i `testing/performance_results_template.csv`.
 
-Na razgovoru nije najvažnije da kažeš „imam 25 tabela i 100.000 redova”, već da pokažeš: koji je poslovni problem, ko je stakeholder, kako si definisao pravilo rezervacije, kako ga SQL implementira, kako test potvrđuje pravilo i kako menadžer vidi rezultat.
+## Šta radiš kada projekat predstavljaš
 
-**Pre nego što projekat staviš na CV kao završen**, pokreni skripte, sačuvaj realne rezultate testova, sastavi Power BI dashboard, i pripremi objašnjenje ključnih SQL procedura. U prezentaciji jasno reci da je projekat simulacija i da je korišćena AI pomoć pri izradi.
+1. Otvori `README.md` i pokaži povezivanje zahteva, SQL implementacije, testova i Power BI nalaza.
+2. Pokaži tri screenshot-a dashboarda i po potrebi lokalni `.pbix`.
+3. Objasni osiguranje rezervacije zaliha u `usp_AllocateOrder` i rezultat konkurentnog testa C01.
+4. Jasno navedi da su organizacija, stakeholderi i podaci **fiktivni/sintetički**, a da je pri izradi korišćena AI pomoć.
+5. Za ponovnu instalaciju koristi **novu praznu demo bazu**. Nemoj ponovno pokretati seed nad postojećom instalacijom.

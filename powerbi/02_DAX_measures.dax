@@ -1,4 +1,9 @@
-// Power BI Desktop > Modeling > New measure. Paste ONE measure at a time.
+// EXAMPLE MEASURE LIBRARY for granular Sales / Inventory / Fulfillment / Procurement views.
+// The shipped .pbix also includes an aggregated DailySales table for its KPI cards.
+// These are reference examples; do not paste all into a model that already contains
+// measures with the same names. Format percent measures as 0.0% in Power BI.
+
+// Power BI Desktop > Modeling > New measure. Add only a needed, non-duplicate measure.
 // Table names: Sales, Inventory, Fulfillment, Procurement.
 
 Orders Placed = DISTINCTCOUNT(Sales[OrderID])
@@ -6,7 +11,8 @@ Orders Placed = DISTINCTCOUNT(Sales[OrderID])
 Delivered Orders =
 CALCULATE(DISTINCTCOUNT(Sales[OrderID]), Sales[OrderStatus] = "DELIVERED")
 
-Ordered Value EUR = SUM(Sales[OrderedValueEUR])
+// This detailed Sales measure explicitly excludes cancelled test orders.
+Ordered Value EUR = CALCULATE(SUM(Sales[OrderedValueEUR]), Sales[OrderStatus] <> "CANCELLED")
 
 Recognized Revenue EUR = SUM(Sales[RecognizedRevenueEUR])
 
@@ -34,7 +40,7 @@ Low Stock SKU Locations =
 CALCULATE(COUNTROWS(Inventory), Inventory[StockHealth]="REORDER")
 
 Delivered Shipments =
-CALCULATE(COUNTROWS(Fulfillment), Fulfillment[ShipmentStatus]="DELIVERED")
+CALCULATE(DISTINCTCOUNT(Fulfillment[ShipmentID]), Fulfillment[ShipmentStatus]="DELIVERED")
 
 On Time Shipments = SUM(Fulfillment[OnTimeDeliveredFlag])
 
